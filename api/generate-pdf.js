@@ -1,6 +1,6 @@
-import { chromium } from 'playwright';
+const { chromium } = require('playwright');
 
-export default async function handler(req, res) {
+module.exports = async (req, res) => {
   try {
     const htmlContent = req.body;
 
@@ -21,4 +21,4 @@ export default async function handler(req, res) {
     console.error('PDF generation failed:', err);
     res.status(500).send('Failed to generate PDF');
   }
-}
+};
