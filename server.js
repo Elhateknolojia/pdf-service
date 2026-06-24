@@ -2,39 +2,31 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const puppeteer = require('puppeteer');
 
-
-
 const app = express();
 app.use(bodyParser.text({ type: 'text/html' }));
 
-// POST /generate-pdf
 app.post('/generate-pdf', async (req, res) => {
   try {
     const htmlContent = req.body;
 
+    // 👇 Await the executablePath
+    const executablePath = await puppeteer.executablePath();
+
     const browser = await puppeteer.launch({
-    executablePath: puppeteer.executablePath(), // 👈 critical line
-    args: [
+      executablePath,   // now a string, not a Promise
+      args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
         '--disable-dev-shm-usage',
         '--disable-gpu'
-    ],
-    headless: true
+      ],
+      headless: true
     });
-
 
     const page = await browser.newPage();
-
-    // Load HTML directly
     await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
 
-    // Generate PDF
-    const pdfBuffer = await page.pdf({
-      format: 'A4',
-      printBackground: true
-    });
-
+    const pdfBuffer = await page.pdf({ format: 'A4', printBackground: true });
     await browser.close();
 
     res.set({
@@ -50,6 +42,7 @@ app.post('/generate-pdf', async (req, res) => {
   }
 });
 
+// 👇 Use Render’s dynamic port
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`PDF service running on port ${PORT}`);
