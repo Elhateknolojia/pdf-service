@@ -13,6 +13,7 @@ app.post('/generate-pdf', async (req, res) => {
     const htmlContent = req.body;
 
     const browser = await puppeteer.launch({
+    executablePath: puppeteer.executablePath(), // 👈 critical line
     args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
@@ -21,6 +22,7 @@ app.post('/generate-pdf', async (req, res) => {
     ],
     headless: true
     });
+
 
     const page = await browser.newPage();
 
@@ -48,6 +50,7 @@ app.post('/generate-pdf', async (req, res) => {
   }
 });
 
-app.listen(4000, () => {
-  console.log('PDF service running on http://localhost:4000');
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => {
+  console.log(`PDF service running on port ${PORT}`);
 });
