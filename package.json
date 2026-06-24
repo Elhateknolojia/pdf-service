@@ -1,9 +1,6 @@
 {
   "name": "pdf-service",
   "version": "1.0.0",
-  "scripts": {
-    "start": "vercel dev"
-  },
   "dependencies": {
     "playwright": "^1.44.0"
   }
